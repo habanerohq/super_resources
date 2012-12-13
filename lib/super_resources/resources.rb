@@ -3,7 +3,7 @@ module SuperResources
     extend ActiveSupport::Concern
 
     included do
-      helper_method :collection, :resource
+      helper_method :collection, :collection=, :resource, :resource=, :resource_class, :parent, :nested?
     end
 
     protected
@@ -13,23 +13,55 @@ module SuperResources
     end
 
     def resource_instance_name
-      resource_class.name.underscore.to_sym
+      controller_name.singularize.to_sym
     end
 
     def resource_collection_name
-      resource_instance_name.to_s.pluralize.to_sym
+      controller_name.to_sym
     end
 
-    def collection
-      @collection ||= resource_class.scoped
+    def collection(&block)
+      if block_given?
+        @collection = yield
+      else
+        @collection ||= resource_class.scoped
+      end
     end
 
-    def resource
-      @resource ||= resource_class.find(params[:id])
+    def collection=(c)
+      @collection = c
     end
 
-    def build_resource
-      @resource ||= resource_class.new(resource_params)
+    def resource(&block)
+      if block_given?
+        @resource = yield
+      else
+        @resource ||= resource_class.send(finder_method, params[:id])
+      end
+    end
+
+    def resource=(r)
+      @resource = r
+    end
+
+    def finder_method
+      :find
+    end
+
+    def nested?
+      false
+    end
+
+    def parent
+      nil
+    end
+
+    def build_resource(&block)
+      if block_given?
+        @resource = yield
+      else
+        @resource ||= resource_class.new(resource_params)
+      end
     end
 
     def create_resource(attributes)

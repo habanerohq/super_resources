@@ -33,13 +33,10 @@ module SuperResources
     end
 
     def resource(&block)
-      case
-      when block_given?
+      if block_given?
         @resource = yield
-      when params[:id].present?
-        @resource ||= end_of_association_chain.send(finder_method, params[:id])
       else
-        build_resource
+        @resource ||= end_of_association_chain.send(finder_method, params[:id])
       end
     end
 

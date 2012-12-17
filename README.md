@@ -194,8 +194,6 @@ You could, of course, completely redefine an action:
    		# knock yourself out
    	end
 
-You don't even need to worry about calling `build_resource` explicitly. The first time you call `resource`, if SuperResourcess can't find a way to find a resource it will call `build_resource` as a last resort.
-
 ### Defining Actions
 
 Just do it. Declare them in your controller and match them in routes. All the SuperResources helpers are still available to you.

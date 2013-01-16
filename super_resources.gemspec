@@ -6,8 +6,8 @@ require 'super_resources/version'
 Gem::Specification.new do |gem|
   gem.name          = "super_resources"
   gem.version       = SuperResources::VERSION
-  gem.authors       = ["Ben Caldwell"]
-  gem.email         = ["bencaldwell@einti.com"]
+  gem.authors       = ["Ben Caldwell", "Mark Ratjens"]
+  gem.email         = ["bencaldwell@einti.com", "mark@ratjens.com"]
   gem.description   = %q{TODO: Write a gem description}
   gem.summary       = %q{TODO: Write a gem summary}
   gem.homepage      = ""

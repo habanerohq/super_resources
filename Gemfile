@@ -1,4 +1,8 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in super_resources.gemspec
 gemspec
+
+gem 'rails', '~> 3.1'
+
+gem 'sqlite3'
+gem 'rspec-rails'

@@ -27,6 +27,14 @@ describe SimpleResourcesController do
     it "answers a collection of resources through an adapted collection method" do
       pending ('for example, extra scoping')
     end
+
+    it "adapts the resource method name" do
+      pending
+    end
+
+    it "adapts the collection method name" do
+      pending
+    end
   end
 
   describe 'finding resourcess' do

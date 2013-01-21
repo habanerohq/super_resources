@@ -1,3 +1,3 @@
 Dummy::Application.routes.draw do
-  resources :simple_resource
+  resources :simple_resources
 end

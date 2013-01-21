@@ -89,12 +89,21 @@ module SuperResources
     end
 
     def route
-      result = nil
-      Rails.application.routes.router.recognize(request) do |route, matches, params|
-        result = route 
+      @route ||= begin
+        routes.formatter.send(:match_route, nil, path_parameters) do |route|
+          # TODO: don't assume the first route is good, validate!
+          # TODO: don't use break
+          break route
+        end
       end
+    end
 
-      result
+    def routes
+      request.env['action_dispatch.routes']
+    end
+
+    def path_parameters
+      request.env['action_dispatch.request.path_parameters']
     end
   end
 end

@@ -1,0 +1,2 @@
+class MyAdaptedResource < AdaptedResource
+end

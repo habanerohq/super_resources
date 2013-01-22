@@ -118,6 +118,7 @@ describe SimpleResourcesController do
           r = SimpleResource.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           SimpleResource.any_instance.stub(:save).and_return(false)
+          SimpleResource.any_instance.stub(:save).and_return(['error'])
           put :update, {:id => r.to_param, :simple_resource => {}}, valid_session
           response.should render_template("edit")
         end
@@ -133,10 +134,9 @@ describe SimpleResourcesController do
       end
 
       it "redirects to the resources list" do
-        pending("undefined local variable or method 'collection_path'")
         r = SimpleResource.create! valid_attributes
         delete :destroy, {:id => r.to_param}, valid_session
-        response.should redirect_to(collection_url)
+        response.should redirect_to(subject.send :collection_url)
       end
     end      
   end

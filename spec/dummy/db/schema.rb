@@ -14,6 +14,8 @@
 ActiveRecord::Schema.define(:version => 20130117225232) do
 
   create_table "simple_resources", :force => true do |t|
+    t.string "type"
+    t.text   "description"
   end
 
 end

@@ -16,6 +16,10 @@ module SuperResources
       controller_name.singularize.to_sym
     end
 
+    def resource_params_name
+      resource_instance_name
+    end
+
     def resource_collection_name
       controller_name.to_sym
     end
@@ -74,7 +78,7 @@ module SuperResources
     end
   
     def resource_params
-      params[resource_instance_name] || {}
+      params[resource_params_name] || {}
     end
 
     def destroy_resource

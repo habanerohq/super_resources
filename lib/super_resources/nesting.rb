@@ -15,7 +15,7 @@ module SuperResources
 
     def method_missing(m, *args, &block)
       case
-      when m == resource_instance_name
+      when m == resource_params_name
         resource
       when i = symbols_for_association_chain.index(m)
         association_chain[i]

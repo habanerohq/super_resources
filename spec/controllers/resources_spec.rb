@@ -3,57 +3,33 @@ require 'spec_helper'
 describe SimpleResourcesController do
   describe 'resource class method' do
     it "answers the resource class through a standard resource_class method" do
-      pending
-    end
-
-    it "answers the resource class through an adapted resource_class method" do
-      pending
+      get :index
+      subject.send(:resource_class).should eq(SimpleResource)
     end
   end
 
   describe 'individual and collection methods' do
     it "answers the resource through a standard resource method" do
-      pending
+      r = SimpleResource.create!
+      get :show, {:id => r.to_param}
+      subject.send(:resource).should eq(r)
     end
 
-    it "answers a collection of resources through a standard collection method" do
-      pending
+    it "answers the the name of the resource's input param hash name " do
+      subject.send(:resource_params_name).should eq(:simple_resource)
     end
 
-    it "answers the resource through an adapted resource method" do
-      pending
-    end
-
-    it "answers a collection of resources through an adapted collection method" do
-      pending ('for example, extra scoping')
-    end
-
-    it "adapts the resource method name" do
-      pending
-    end
-
-    it "adapts the collection method name" do
-      pending
+    it "answers a collection of resources through collection method" do
+      r = SimpleResource.create!
+      get :index, {:id => r.to_param}
+      subject.send(:collection).should eq([r])
     end
   end
 
   describe 'finding resourcess' do
     it "finds resources by a default finder when no override is given" do
-      pending
-    end
-
-    it "finds resources by a specific finder when one is given" do
-      pending
-    end
-  end
-
-  describe 'customized resource building' do
-      it "allows a completely new implementation" do
-        pending
-      end
-
-    it "adds extra behaviour to the existing build implementation" do
-      pending
+      get :index
+      subject.send(:finder_method).should eq(:find)
     end
   end
 end

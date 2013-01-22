@@ -18,3 +18,4 @@ tmp
 
 /spec/dummy/log/development.log
 /spec/dummy/log/test.log
+/spec/dummy/db/test.sqlite3-journal

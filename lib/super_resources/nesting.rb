@@ -78,7 +78,6 @@ module SuperResources
     end
 
     def symbols_for_association_chain
-      pp route
       @symbols_for_association_chain ||=
         route.parts \
              .select { |p| p.to_s =~ %r(_id$) } \

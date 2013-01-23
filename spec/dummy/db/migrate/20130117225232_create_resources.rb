@@ -6,17 +6,17 @@ class CreateResources < ActiveRecord::Migration
     end
 
     create_table :child_resources do |t|
-      t.belongs_to :parent
+      t.belongs_to :parent_resource
       t.text :description    	
     end
 
     create_table :parent_resources do |t|
-      t.belongs_to :parent
+      t.belongs_to :parent_resource
       t.text :description    	
     end
 
     create_table :grandparent_resources do |t|
-      t.belongs_to :parent
+      t.belongs_to :parent_resource
       t.text :description    	
     end
   

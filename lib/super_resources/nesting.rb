@@ -105,7 +105,7 @@ module SuperResources
     end
 
     def path_parameters
-      request.env['action_dispatch.request.path_parameters']
+      request.env['action_dispatch.request.path_parameters'].symbolize_keys
     end
   end
 end

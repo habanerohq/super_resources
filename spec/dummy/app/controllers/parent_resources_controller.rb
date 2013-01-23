@@ -1,0 +1,2 @@
+class ParentResourcesController < ApplicationController
+end

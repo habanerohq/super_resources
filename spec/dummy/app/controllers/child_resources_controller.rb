@@ -1,0 +1,2 @@
+class ChildResourcesController < ApplicationController
+end

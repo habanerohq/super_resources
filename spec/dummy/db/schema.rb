@@ -13,6 +13,25 @@
 
 ActiveRecord::Schema.define(:version => 20130117225232) do
 
+  create_table "child_resources", :force => true do |t|
+    t.integer "parent_id"
+    t.text    "description"
+  end
+
+  create_table "grandparent_resources", :force => true do |t|
+    t.integer "parent_id"
+    t.text    "description"
+  end
+
+  create_table "great_grandparent_resources", :force => true do |t|
+    t.text "description"
+  end
+
+  create_table "parent_resources", :force => true do |t|
+    t.integer "parent_id"
+    t.text    "description"
+  end
+
   create_table "simple_resources", :force => true do |t|
     t.string "type"
     t.text   "description"

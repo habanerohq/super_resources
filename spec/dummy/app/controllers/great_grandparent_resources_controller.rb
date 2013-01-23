@@ -1,0 +1,2 @@
+class GreatGrandparentResourcesController < ApplicationController
+end

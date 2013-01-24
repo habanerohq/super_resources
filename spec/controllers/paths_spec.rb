@@ -82,3 +82,57 @@ describe ChildResourcesController do
     end
   end
 end
+
+describe ParentResourcesController do
+  describe 'url helpers' do
+    it "collection_url derives nesting for you" do
+      pending
+      ggp = GreatGrandparentResource.create!
+      gp = GrandparentResource.create!(:parent_resource => ggp)
+      get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:collection_url).should eq("fix")
+    end
+
+    it "resource_url derives nesting for you" do
+      pending
+      ggp = GreatGrandparentResource.create!
+      gp = GrandparentResource.create!(:parent_resource => ggp)
+      get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:resource_url, c).should eq("fix")
+    end
+
+    it "resource_url assumes the current resource and derives nesting for you" do
+      pending
+      ggp = GreatGrandparentResource.create!
+      gp = GrandparentResource.create!(:parent_resource => ggp)
+      p = ParentResource.create!
+      get :edit, {:id => p.to_param, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:resource_url).should eq("fix")
+    end
+
+    it "new_resource_url derives nesting for you" do
+      pending
+      ggp = GreatGrandparentResource.create!
+      gp = GrandparentResource.create!(:parent_resource => ggp)
+      get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:new_resource_url).should eq("fix")
+    end
+
+    it "edit_resource_url derives nesting for you" do
+      pending
+      ggp = GreatGrandparentResource.create!
+      gp = GrandparentResource.create!(:parent_resource => ggp)
+      get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:edit_resource_url, c).should eq("fix")
+    end
+
+    it "edit_resource_url assumes the current resource and derives nesting for you" do
+      pending
+      ggp = GreatGrandparentResource.create!
+      gp = GrandparentResource.create!(:parent_resource => ggp)
+      p = ParentResource.create!
+      get :show, {:id => p.to_param, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:edit_resource_url).should eq("fix")
+    end
+  end
+end

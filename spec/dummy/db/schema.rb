@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(:version => 20130117225232) do
   end
 
   create_table "grandparent_resources", :force => true do |t|
-    t.integer "parent_resource_id"
+    t.integer "great_grandparent_resource_id"
     t.text    "description"
   end
 
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(:version => 20130117225232) do
   end
 
   create_table "parent_resources", :force => true do |t|
-    t.integer "parent_resource_id"
+    t.integer "grandparent_resource_id"
     t.text    "description"
   end
 

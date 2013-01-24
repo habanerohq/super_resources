@@ -1,6 +1,6 @@
 class ParentResource < ActiveRecord::Base
-	belongs_to :parent_resource, :class_name => 'GrandparentResource'
+	belongs_to :grandparent_resource
 	has_many :child_resources 
 
-	attr_accessible :parent_resource
+	attr_accessible :grandparent_resource
 end

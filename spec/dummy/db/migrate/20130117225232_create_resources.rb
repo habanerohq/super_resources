@@ -11,12 +11,12 @@ class CreateResources < ActiveRecord::Migration
     end
 
     create_table :parent_resources do |t|
-      t.belongs_to :parent_resource
+      t.belongs_to :grandparent_resource
       t.text :description    	
     end
 
     create_table :grandparent_resources do |t|
-      t.belongs_to :parent_resource
+      t.belongs_to :great_grandparent_resource
       t.text :description    	
     end
   

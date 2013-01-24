@@ -86,53 +86,49 @@ end
 describe ParentResourcesController do
   describe 'url helpers' do
     it "collection_url derives nesting for you" do
-      pending
       ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:parent_resource => ggp)
+      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
-      subject.send(:collection_url).should eq("fix")
+      subject.send(:collection_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources")
     end
 
     it "resource_url derives nesting for you" do
-      pending
       ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:parent_resource => ggp)
+      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
+      p = ParentResource.create!(:grandparent_resource => gp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
-      subject.send(:resource_url, c).should eq("fix")
+      subject.send(:resource_url, p).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}")
     end
 
     it "resource_url assumes the current resource and derives nesting for you" do
-      pending
       ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:parent_resource => ggp)
-      p = ParentResource.create!
-      get :edit, {:id => p.to_param, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
-      subject.send(:resource_url).should eq("fix")
+      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
+      p = ParentResource.create!(:grandparent_resource => gp)
+      get :edit, {:id => p.id, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:resource_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}")
     end
 
     it "new_resource_url derives nesting for you" do
-      pending
       ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:parent_resource => ggp)
+      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
-      subject.send(:new_resource_url).should eq("fix")
+      subject.send(:new_resource_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/new")
     end
 
     it "edit_resource_url derives nesting for you" do
-      pending
       ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:parent_resource => ggp)
+      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
+      p = ParentResource.create!(:grandparent_resource => gp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
-      subject.send(:edit_resource_url, c).should eq("fix")
+      subject.send(:edit_resource_url, p).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}/edit")
     end
 
     it "edit_resource_url assumes the current resource and derives nesting for you" do
-      pending
       ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:parent_resource => ggp)
-      p = ParentResource.create!
-      get :show, {:id => p.to_param, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
-      subject.send(:edit_resource_url).should eq("fix")
+      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
+      p = ParentResource.create!(:grandparent_resource => gp)
+      get :show, {:id => p.id, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
+      subject.send(:edit_resource_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}/edit")
     end
   end
 end

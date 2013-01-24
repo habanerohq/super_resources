@@ -40,43 +40,35 @@ end
 
 describe ChildResourcesController do
   describe 'url helpers' do
+    let(:p) { ParentResource.create! }
+    let(:c) { ChildResource.create!(:parent_resource => p) }
+
     it "collection_url derives nesting for you" do
-      p = ParentResource.create!
       get :index, {:parent_resource_id => p.id}
       subject.send(:collection_url).should eq("http://test.host/parent_resources/#{p.id}/child_resources")
     end
 
     it "resource_url derives nesting for you" do
-      p = ParentResource.create!
-      c = ChildResource.create!(:parent_resource => p)
       get :index, {:parent_resource_id => p.id}
       subject.send(:resource_url, c).should eq("http://test.host/parent_resources/#{p.id}/child_resources/#{c.id}")
     end
 
     it "resource_url assumes the current resource and derives nesting for you" do
-      p = ParentResource.create!
-      c = ChildResource.create!(:parent_resource => p)
       get :edit, {:id => c.to_param, :parent_resource_id => p.id}
       subject.send(:resource_url).should eq("http://test.host/parent_resources/#{p.id}/child_resources/#{c.id}")
     end
 
     it "new_resource_url derives nesting for you" do
-      p = ParentResource.create!
-      c = ChildResource.create!(:parent_resource => p)
       get :index, {:parent_resource_id => p.id}
       subject.send(:new_resource_url).should eq("http://test.host/parent_resources/#{p.id}/child_resources/new")
     end
 
     it "edit_resource_url derives nesting for you" do
-      p = ParentResource.create!
-      c = ChildResource.create!(:parent_resource => p)
       get :index, {:parent_resource_id => p.id}
       subject.send(:edit_resource_url, c).should eq("http://test.host/parent_resources/#{p.id}/child_resources/#{c.id}/edit")
     end
 
     it "edit_resource_url assumes the current resource and derives nesting for you" do
-      p = ParentResource.create!
-      c = ChildResource.create!(:parent_resource => p)
       get :show, {:id => c.to_param, :parent_resource_id => p.id}
       subject.send(:edit_resource_url).should eq("http://test.host/parent_resources/#{p.id}/child_resources/#{c.id}/edit")
     end
@@ -85,48 +77,36 @@ end
 
 describe ParentResourcesController do
   describe 'url helpers' do
+    let(:ggp) { GreatGrandparentResource.create! }
+    let(:gp)  { GrandparentResource.create!(:great_grandparent_resource => ggp) }
+    let(:p)   { ParentResource.create!(:grandparent_resource => gp) }
+
     it "collection_url derives nesting for you" do
-      ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
       subject.send(:collection_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources")
     end
 
     it "resource_url derives nesting for you" do
-      ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
-      p = ParentResource.create!(:grandparent_resource => gp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
       subject.send(:resource_url, p).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}")
     end
 
     it "resource_url assumes the current resource and derives nesting for you" do
-      ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
-      p = ParentResource.create!(:grandparent_resource => gp)
       get :edit, {:id => p.id, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
       subject.send(:resource_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}")
     end
 
     it "new_resource_url derives nesting for you" do
-      ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
       subject.send(:new_resource_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/new")
     end
 
     it "edit_resource_url derives nesting for you" do
-      ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
-      p = ParentResource.create!(:grandparent_resource => gp)
       get :index, {:grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
       subject.send(:edit_resource_url, p).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}/edit")
     end
 
     it "edit_resource_url assumes the current resource and derives nesting for you" do
-      ggp = GreatGrandparentResource.create!
-      gp = GrandparentResource.create!(:great_grandparent_resource => ggp)
-      p = ParentResource.create!(:grandparent_resource => gp)
       get :show, {:id => p.id, :grandparent_resource_id => gp.id, :great_grandparent_resource_id => ggp.id}
       subject.send(:edit_resource_url).should eq("http://test.host/great_grandparent_resources/#{ggp.id}/grandparent_resources/#{gp.id}/parent_resources/#{p.id}/edit")
     end

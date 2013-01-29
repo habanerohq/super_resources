@@ -42,7 +42,7 @@ describe 'Nested resources' do
       end
 
       it "update a resource qualified by a parent" do
-        ChildResource.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
+        ChildResource.any_instance.should_receive(:update_attributes).with({'these' => 'params'}).and_return(true)
         put :update, {:id => c.to_param, :child_resource => {'these' => 'params'}, :parent_resource_id => p.id}
 
         subject.send(:resource).should eq(c)
@@ -95,7 +95,7 @@ describe 'Nested resources' do
       end
 
       it "update a resource qualified by a grandparent" do
-        ParentResource.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
+        ParentResource.any_instance.should_receive(:update_attributes).with({'these' => 'params'}).and_return(true)
         put :update, {:id => p.to_param, :parent_resource => {'these' => 'params'}, :great_granbparent_resource_id => ggp.id, :grandparent_resource_id => gp.id}
 
         subject.send(:resource).should eq(p)

@@ -18,7 +18,7 @@ describe 'In the context of generic RESTful-ness,' do
       end
 
       it "redirects from update as adapted" do
-        GrandparentResource.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
+        GrandparentResource.any_instance.should_receive(:update_attributes).with({'these' => 'params'}).and_return(true)
         put :update, {:id => gp.to_param, :grandparent_resource => {'these' => 'params'}, :great_grandparent_resource_id => ggp.id}
 
         subject.send(:resource).should eq(gp)

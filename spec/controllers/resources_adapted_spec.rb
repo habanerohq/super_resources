@@ -92,9 +92,9 @@ describe AdaptedResourcesController do
         end
 
         it "re-renders the 'new' template" do
-#          pending("Failure/Error: response.should render_template('new')")
           # Trigger the behavior that occurs when invalid params are submitted
           MyAdaptedResource.any_instance.stub(:save).and_return(false)
+          MyAdaptedResource.any_instance.stub(:errors).and_return(['error'])
           post :create, {:input => {}}, valid_session
           response.should render_template("new")
         end
@@ -136,11 +136,10 @@ describe AdaptedResourcesController do
         end
 
         it "re-renders the 'edit' template" do
-#          pending("Failure/Error: response.should render_template('edit')")
           r = MyAdaptedResource.create! valid_attributes
           # Trigger the behavior that occurs when invalid params are submitted
           MyAdaptedResource.any_instance.stub(:save).and_return(false)
-          MyAdaptedResource.any_instance.stub(:save).and_return(['error'])
+          MyAdaptedResource.any_instance.stub(:errors).and_return(['error'])
           put :update, {:id => r.to_param, :input => {}}, valid_session
           response.should render_template("edit")
         end

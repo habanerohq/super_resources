@@ -25,6 +25,8 @@ module SuperResources
     def create(options = {}, &block)
       if create_resource(resource_params)
         options[:location] ||= resource_url
+      else
+        options[:location] = edit_resource_url
       end
 
       respond_with(*(with_chain(resource) << options), &block)

@@ -100,7 +100,7 @@ describe GreatGrandparentResourcesController do
       end
 
       it "re-renders the 'new' template" do
-        pending("Failure/Error: response.should render_template('new')")
+#        pending("Failure/Error: response.should render_template('new')")
         # Trigger the behavior that occurs when invalid params are submitted
         GreatGrandparentResource.any_instance.stub(:save).and_return(false)
         post :create, {:great_grandparent_resource => {}}, valid_session
@@ -144,7 +144,7 @@ describe GreatGrandparentResourcesController do
       end
 
       it "re-renders the 'edit' template" do
-        pending("Failure/Error: response.should render_template('edit')")
+#        pending("Failure/Error: response.should render_template('edit')")
         r = GreatGrandparentResource.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         GreatGrandparentResource.any_instance.stub(:save).and_return(false)

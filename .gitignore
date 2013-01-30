@@ -16,7 +16,5 @@ test/tmp
 test/version_tmp
 tmp
 
-/spec/dummy/log/development.log
-/spec/dummy/log/test.log
-/spec/dummy/db/test.sqlite3-journal
-/spec/dummy/db/development.sqlite3
+spec/dummy/log/*.log
+spec/dummy/db/*.sqlite3

@@ -25,16 +25,16 @@ Or install it yourself as:
 
 To gain all the standard RESTful actions, just `include SuperResources::Controller` in your controller:
 
-		class OrganizationUnitsController < ApplicationController
-		  include SuperResources::Controller
-		end
+    class OrganizationUnitsController < ApplicationController
+      include SuperResources::Controller
+    end
 
 ### Resource Helper Methods
 
 SuperResources provides helper methods that you can use directly in the controller, views or helper methods:
 
-		resource
-		collection
+    resource
+    collection
 
 For member actions, `resource` answers a single object that the RESTFUL is operating on.
 For collection actions (i.e `index1), `collection` answer a scoped collection of objects.
@@ -65,7 +65,7 @@ Let's face it: deailing with nested resources has always been a pain. All that f
 
 It should be much easier, especially when you take routes into account. If I have an action that is matched to this route:
 
-		/notes/:note_id/pages/:id
+    /notes/:note_id/pages/:id
 
 then shouldn't I have paths available that can work out the nesting context, so that I don't hard code it?
 
@@ -79,14 +79,14 @@ If you need, such as when you want to link 'outside the nest' as it were, you st
 Sometimes you want to use the object that is nesting your resource, such as when you want to customize a redirect. SuperResources provides 
 `parent` to answer that object. For example given, the following route:
 
-		/notes/:note_id/pages/:id
+    /notes/:note_id/pages/:id
 
 
 calling `parent` will answer a Note object with an id of `:note_id`. 
 
 For deeper nests, the immediately nested object is always answered by `parent`. For example, given this route:
 
-		/authors/:author_id/notes/:note_id/pages/:id
+    /authors/:author_id/notes/:note_id/pages/:id
 
 calling `parent` will still answer a Note object with an id of `:note_id`. 
 
@@ -96,13 +96,13 @@ Any nested route implies a component hierarchy of objects. SuperResources allows
 
 For example, given this route:
 
-		/authors/:author_id/notes/:note_id/pages/:id
+    /authors/:author_id/notes/:note_id/pages/:id
 
 you can make these calls:
 
-	author 	#=> Author with an id of :author_id
-	note 		#=> Note with an id of :note_id
-	page 		#=> Page with an id of :id
+  author  #=> Author with an id of :author_id
+  note    #=> Note with an id of :note_id
+  page    #=> Page with an id of :id
 
 An example of a place where you will want these, is in a layout template that presents information about the nesting objects. For example, you may want to show a page inside an author layout template. The author layout template will present information about the author. In this case, the layout will be used in the context of `PagesController`, so you can't refer to `resource` in the layout, since it will answer the page, not the author. You need some way to arbitrarily refer to the author.  Being able to call `author` provides this.
 
@@ -112,15 +112,15 @@ An example of a place where you will want these, is in a layout template that pr
 
 SuperResources derives the class of the target resource from the controller name. For example, `OrganizationUnitsController` operates, by default, on resources of the class `OrganizationUnit`. If you want to change this, redefine hotspot method `resource_class`, for example:
 
-		class TeamsController < ApplicationController
-		  include SuperResources::Controller
+    class TeamsController < ApplicationController
+      include SuperResources::Controller
 
-		  protected
+      protected
 
-		  def resource_class
-		  	OrganizationUnit
-		  end
-		end
+      def resource_class
+        OrganizationUnit
+      end
+    end
 
 ### Resource Helper Methods
 
@@ -131,9 +131,9 @@ The block for `resource` shall answer a single instance of the resource class an
 
 For example, if you wanted 'TeamsController#collection' to return only those teams that the current user has joined, you would write an implementation of `collection` that calls its super, passing a block the evalautes to the right collection:
 
-		def collection
-		  super { resource_class.joined_by(current_user) }
-		end
+    def collection
+      super { resource_class.joined_by(current_user) }
+    end
 
 If that looks strange, bear in mind it's been designed so that you don't need to know how SuperResources internally uses your preferred implementation.
 
@@ -141,18 +141,18 @@ If that looks strange, bear in mind it's been designed so that you don't need to
 
 Before being able to use the result of `resource`, SuperResources may need to find it. The canonical way to do this is to do:
 
-	resource_class.find(:params[:id])
+  resource_class.find(:params[:id])
 
 While SuperResource uses the `find` method as the default, you can choose another finder method by redefining `finder_method`. For example:
 
-		class PagesController < ApplicationController
+    class PagesController < ApplicationController
 
-		  protected
+      protected
 
-		  def finder_method
-		    :find_by_position
-		  end
-		end
+      def finder_method
+        :find_by_position
+      end
+    end
 
 ### Builder Method
 
@@ -160,21 +160,21 @@ SuperResources extracts the construction of a new resource into the `build_resou
 
 If you need to do specialized work for the build, pass the a block to `build_resource` that evaluates to an object with the state you need. For example:
 
-		build_resource do
-    	resource_class.new do |p|
-    		# initialize the state here
+    build_resource do
+      resource_class.new do |p|
+        # initialize the state here
       end
-	  end
+    end
 
 More commonly, you would redefine the whole method so that it always behaves the same way for its enclosing controller:
 
-		def build_resource
-			super do
-	    	resource_class.new do |p|
-	    		# initialize the state here
-	      end
-	    end
-	  end
+    def build_resource
+      super do
+        resource_class.new do |p|
+          # initialize the state here
+        end
+      end
+    end
 
 ### Redefining Actions
 
@@ -182,17 +182,17 @@ Yes, you can. All actions defined by SuperResources use responders and accept pa
 
 For example, suppose that after creating a comment, you want to redirect to an index of comments that apply to the same parent. Adapt teh action like this:
 
-  	def create
-   		super :location => polymorphic_url([ parent, :comments ])
-   	end
+    def create
+      super :location => polymorphic_url([ parent, :comments ])
+    end
 
 Anything you can pass to `respond_with`, you can pass to he super call, including a block.
 
 You could, of course, completely redefine an action:
 
-  	def new
-   		# knock yourself out
-   	end
+    def new
+      # knock yourself out
+    end
 
 ### Defining Actions
 

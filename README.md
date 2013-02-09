@@ -200,9 +200,9 @@ Just do it. Declare them in your controller and match them in routes. All the Su
 
 ## Acknowledgments
 
-SuperResources would never have happened without InheritedResources [https://github.com/josevalim/inherited_resources] existing first.
+SuperResources would never have happened without [InheritedResources](https://github.com/josevalim/inherited_resources) existing first.
 We preferred the idea of abstracting and extracting RESTful actions out of all our controllers and we're not so keen on scaffolds generating
-un-DRY code. We used InheritedResources in a production deployed application [meetlinkshare.com], gained some experience and decided we wanted an even DRYer tool.
+un-DRY code. We used InheritedResources in a production deployed application [MeetLinkShare](http://www.meetlinkshare.com), gained some experience and decided we wanted an even DRYer tool.
 
 The basic mechanics of SuperResources was hacked out during Rails Camp 12 in Tasmania, Australia and was subsequently applied to MeetLinkShare.
 

@@ -1,11 +1,17 @@
 module SuperResources
-  autoload :Actions,    "super_resources/actions"
-  autoload :Controller, "super_resources/controller"
-  autoload :Nesting,    "super_resources/nesting"
-  autoload :Resources,  "super_resources/resources"
-  autoload :URLHelpers, "super_resources/url_helpers"
-  autoload :Version,    "super_resources/version"
+  extend ActiveSupport::Autoload
 
-  autoload :HasScope,   "super_resources/has_scope"
-  autoload :Cancan,     "super_resources/cancan"
+  autoload :Actions
+  autoload :Controller
+  autoload :Nesting
+  autoload :Resources
+  autoload :URLHelpers
+  autoload :Version
+
+  autoload_under 'support' do
+    autoload :HasScope
+    autoload :Cancan
+  end
 end
+
+require 'super_resources/railtie' if defined?(Rails)

@@ -126,13 +126,12 @@ SuperResources derives the class of the target resource from the controller name
 
 Yes, you can adapt these to suit your needs. 
 
-Both `resource` and `collection` accept a block, which SuperResources uses to stitch into its internal implementation, so tht any subsequent calls to these helpers uses your implementation.
-The block for `resource` shall answer a single instance of the resource class and the block for `collection` shall answer an array of instances of the resource class. 
+The `resource` and `collection` methods are used internally by the default RESTful actions provided by SuperResources, and can have their implementations customised easily. The return values of these methods are memoized for various reasons, for this you should make use of the `memoize_resource` and `memoize_collection` methods respectivley. Both methods take a block that is only executed as necessary.
 
 For example, if you wanted 'TeamsController#collection' to return only those teams that the current user has joined, you would write an implementation of `collection` that calls its super, passing a block the evalautes to the right collection:
 
     def collection
-      super { resource_class.joined_by(current_user) }
+      memoize_collection { resource_class.joined_by(current_user) }
     end
 
 If that looks strange, bear in mind it's been designed so that you don't need to know how SuperResources internally uses your preferred implementation.
@@ -156,20 +155,10 @@ While SuperResource uses the `find` method as the default, you can choose anothe
 
 ### Builder Method
 
-SuperResources extracts the construction of a new resource into the `build_resource` method. If you need to create a new resource, say in a special action, use 'build_resource' so that SuperResource can also keep track of it (for example, make sure that `resource' answers the built object).
-
-If you need to do specialized work for the build, pass the a block to `build_resource` that evaluates to an object with the state you need. For example:
-
-    build_resource do
-      resource_class.new do |p|
-        # initialize the state here
-      end
-    end
-
-More commonly, you would redefine the whole method so that it always behaves the same way for its enclosing controller:
+SuperResources extracts the construction of a new resource into the `build_resource` method. If you need to do specialized work for the build, override the `build_resource` method and be sure to memoize your result:
 
     def build_resource
-      super do
+      memoize_resource do
         resource_class.new do |p|
           # initialize the state here
         end

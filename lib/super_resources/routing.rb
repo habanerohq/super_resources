@@ -12,6 +12,18 @@ module SuperResources
       routes.router
     end
 
+    def route
+      @route ||= recognize_route(request.path.present? ? request : mock_request)
+    end
+
+    private
+
+    def recognize_route(request)
+      router.recognize(request) do |route, matches, params|
+        return route
+      end
+    end
+
     def path_parameters
       request.env['action_dispatch.request.path_parameters'].symbolize_keys
     end
@@ -22,16 +34,6 @@ module SuperResources
       @mock_request ||= begin
         env = Rack::MockRequest.env_for(url_for(path_parameters), :method => request.method)
         request.class.new(env)
-      end
-    end
-
-    def route
-      @route ||= recognize_route(request.path.present? ? request : mock_request)
-    end
-
-    def recognize_route(request)
-      router.recognize(request) do |route, matches, params|
-        return route
       end
     end
   end

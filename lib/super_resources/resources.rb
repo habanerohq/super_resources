@@ -3,7 +3,7 @@ module SuperResources
     extend ActiveSupport::Concern
 
     included do
-      helper_method :collection, :collection=, :resource, :resource=, :resource_class, :parent, :nested?
+      helper_method :collection, :resource, :resource_class, :parent, :nested?
     end
 
     protected
@@ -24,28 +24,20 @@ module SuperResources
       controller_name.to_sym
     end
 
-    def collection(&block)
-      if block_given?
-        @collection = yield
-      else
-        @collection ||= resource_class.scoped
-      end
+    def collection
+      memoize_collection { resource_class.scoped }
     end
 
-    def collection=(c)
-      @collection = c
+    def memoize_collection(&block)
+      @collection ||= block.call
     end
 
-    def resource(&block)
-      if block_given?
-        @resource = yield
-      else
-        @resource ||= resource_class.send(finder_method, params[:id])
-      end
+    def resource
+      memoize_resource { resource_class.send(finder_method, params[:id]) }
     end
 
-    def resource=(r)
-      @resource = r
+    def memoize_resource(&block)
+      @resource ||= block.call
     end
 
     def finder_method
@@ -60,25 +52,20 @@ module SuperResources
       nil
     end
 
-    def build_resource(&block)
-      if block_given?
-        @resource = yield
-      else
-        @resource ||= resource_class.new(resource_params)
-      end
-    end
-
-    def create_resource(attributes)
-      build_resource.attributes = attributes
-      resource.save
-    end
-
-    def update_resource(attributes)
-      resource.update_attributes(attributes)
-    end
-  
     def resource_params
       params[resource_params_name] || {}
+    end
+
+    def build_resource(params={})
+      memoize_resource { resource_class.new(params) }
+    end
+
+    def create_resource(params)
+      build_resource(params).save
+    end
+
+    def update_resource(params)
+      resource.update_attributes(params)
     end
 
     def destroy_resource

@@ -1,7 +1,9 @@
 module SuperResources
   module Nesting
     extend ActiveSupport::Concern
+
     include Resources
+    include Routing
 
     included do
       helper_method :association_chain, :with_chain, :method_missing, :respond_to?
@@ -24,28 +26,16 @@ module SuperResources
       end
     end
 
-    def collection(&block)
-      if block_given?
-        @collection = yield
-      else
-        @collection ||= end_of_association_chain
-      end
+    def collection
+      memoize_collection { end_of_association_chain }
     end
 
-    def resource(&block)
-      if block_given?
-        @resource = yield
-      else
-        @resource ||= end_of_association_chain.send(finder_method, params[:id])
-      end
+    def resource
+      memoize_resource { end_of_association_chain.send(finder_method, params[:id]) }
     end
 
-    def build_resource(&block)
-      if block_given?
-        @resource = yield
-      else
-        @resource ||= end_of_association_chain.build(resource_params)
-      end
+    def build_resource(params={})
+      memoize_resource { end_of_association_chain.build(params) }
     end
 
     def nested?
@@ -82,29 +72,10 @@ module SuperResources
         route.parts \
              .select { |p| p.to_s =~ %r(_id$) } \
              .map    { |p| p.to_s.gsub(/_id$/, '').to_sym }
-      @symbols_for_association_chain
     end
 
     def with_chain(object)
       association_chain + [ object ]
-    end
-
-    def route
-      @route ||= begin
-        routes.formatter.send(:match_route, nil, path_parameters) do |route|
-          # TODO: don't assume the first route is good, validate!
-          # TODO: don't use break
-          break route
-        end
-      end
-    end
-
-    def routes
-      request.env['action_dispatch.routes']
-    end
-
-    def path_parameters
-      request.env['action_dispatch.request.path_parameters'].symbolize_keys
     end
   end
 end

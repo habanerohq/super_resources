@@ -10,8 +10,8 @@ class AdaptedResourcesController < SimpleResourcesController
     :input
   end
 
-  def build_resource
-   	super do
+  def build_resource(params={})
+    memoize_resource do
       resource_class.new do |p|
          p.description = a_hard_coded_description
     	end

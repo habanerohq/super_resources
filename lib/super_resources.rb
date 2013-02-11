@@ -5,6 +5,7 @@ module SuperResources
   autoload :Controller
   autoload :Nesting
   autoload :Resources
+  autoload :Routing
   autoload :URLHelpers
   autoload :Version
 

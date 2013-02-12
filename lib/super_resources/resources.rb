@@ -71,5 +71,9 @@ module SuperResources
     def destroy_resource
       resource.destroy
     end
+
+    def method_missing(method, *args, &block)
+      method == resource_instance_name ? resource : super
+    end
   end
 end

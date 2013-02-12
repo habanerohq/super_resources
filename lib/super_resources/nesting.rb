@@ -15,17 +15,6 @@ module SuperResources
 
     protected
 
-    def method_missing(m, *args, &block)
-      case
-      when m == resource_params_name
-        resource
-      when i = symbols_for_association_chain.index(m)
-        association_chain[i]
-      else
-        super
-      end
-    end
-
     def collection
       memoize_collection { end_of_association_chain }
     end
@@ -76,6 +65,14 @@ module SuperResources
 
     def with_chain(object)
       association_chain + [ object ]
+    end
+
+    def method_missing(method, *args, &block)
+      if index = symbols_for_association_chain.index(method)
+        association_chain[index]
+      else
+        super
+      end
     end
   end
 end

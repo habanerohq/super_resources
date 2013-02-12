@@ -10,8 +10,9 @@ module SuperResources
   autoload :Version
 
   autoload_under 'support' do
-    autoload :HasScope
     autoload :Cancan
+    autoload :Draper
+    autoload :HasScope
   end
 end
 

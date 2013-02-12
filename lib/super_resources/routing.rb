@@ -8,6 +8,10 @@ module SuperResources
       Rails.application.routes || request.env['action_dispatch.routes']
     end
 
+    def named_routes
+      routes.named_routes
+    end
+
     def router
       routes.router
     end

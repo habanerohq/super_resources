@@ -32,12 +32,20 @@ module SuperResources
       @collection ||= block.call
     end
 
+    def collection
+      @collection.present?
+    end
+
     def resource
       memoize_resource { resource_class.send(finder_method, params[:id]) }
     end
 
     def memoize_resource(&block)
       @resource ||= block.call
+    end
+
+    def resource?
+      @resource.present?
     end
 
     def finder_method

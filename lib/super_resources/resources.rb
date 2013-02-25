@@ -3,7 +3,8 @@ module SuperResources
     extend ActiveSupport::Concern
 
     included do
-      helper_method :collection, :resource, :resource_class, :parent, :nested?
+      helper_method :collection, :collection?, :resource, :resource?,
+                    :resource_class, :parent, :nested?
     end
 
     protected
@@ -32,8 +33,8 @@ module SuperResources
       @collection ||= block.call
     end
 
-    def collection
-      @collection.present?
+    def collection?
+      not resource?
     end
 
     def resource
@@ -45,7 +46,7 @@ module SuperResources
     end
 
     def resource?
-      @resource.present?
+      params[:id].present?
     end
 
     def finder_method

@@ -14,7 +14,10 @@ module SuperResources
     end
 
     def collection_route
-      chain = symbols_for_association_chain + [resource_collection_name]
+      uncountable = (resource_collection_name == resource_instance_name)
+      chain = symbols_for_association_chain + [ uncountable ?
+        "#{resource_instance_name}_index" : resource_collection_name ]
+
       :"#{chain.join('_')}_url"
     end
 

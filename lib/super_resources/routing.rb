@@ -20,16 +20,16 @@ module SuperResources
       @route ||= recognize_route(request.path.present? ? request : mock_request)
     end
 
+    def path_parameters
+      request.env['action_dispatch.request.path_parameters'].symbolize_keys
+    end
+
     private
 
     def recognize_route(request)
       router.recognize(request) do |route, matches, params|
         return route
       end
-    end
-
-    def path_parameters
-      request.env['action_dispatch.request.path_parameters'].symbolize_keys
     end
 
     def mock_request

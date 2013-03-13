@@ -37,7 +37,7 @@ SuperResources provides helper methods that you can use directly in the controll
     collection
 
 For member actions, `resource` answers a single object that the RESTFUL is operating on.
-For collection actions (i.e `index1), `collection` answer a scoped collection of objects.
+For collection actions (i.e `index`), `collection` answer a scoped collection of objects.
 
 SuperResources does away with specifically named instance variables, such as those created by standard scaffolds. For example, in the example above, SuperResources does not give you `@organization_unit` or `@organization_units` for free. You won't need them in the common cases. Using `resource` and `collection` in every controller makes for easier coding and maintenance.
 
@@ -61,7 +61,7 @@ have a resource that is nested inside multiple other objects. SuperResources dyn
 
 ## Nested Resource
 
-Let's face it: deailing with nested resources has always been a pain. All that fiddling about, getting the path names and inputs right. Chane the nesting and you have to go through and chaneg all your path calls too. Then, if you have a resource that can be nested within multiple other resources, such as when you have an associative object and you want to navigate to it from any of it associations, the permutations become very complex.
+Let's face it: dealing with nested resources has always been a pain. All that fiddling about, getting the path names and inputs right. Change the nesting and you have to go through and change all your path calls too. Then, if you have a resource that can be nested within multiple other resources, such as when you have an associative object and you want to navigate to it from any of it associations, the permutations become very complex.
 
 It should be much easier, especially when you take routes into account. If I have an action that is matched to this route:
 
@@ -100,9 +100,9 @@ For example, given this route:
 
 you can make these calls:
 
-  author  #=> Author with an id of :author_id
-  note    #=> Note with an id of :note_id
-  page    #=> Page with an id of :id
+    author  #=> Author with an id of :author_id
+    note    #=> Note with an id of :note_id
+    page    #=> Page with an id of :id
 
 An example of a place where you will want these, is in a layout template that presents information about the nesting objects. For example, you may want to show a page inside an author layout template. The author layout template will present information about the author. In this case, the layout will be used in the context of `PagesController`, so you can't refer to `resource` in the layout, since it will answer the page, not the author. You need some way to arbitrarily refer to the author.  Being able to call `author` provides this.
 
@@ -140,7 +140,7 @@ If that looks strange, bear in mind it's been designed so that you don't need to
 
 Before being able to use the result of `resource`, SuperResources may need to find it. The canonical way to do this is to do:
 
-  resource_class.find(:params[:id])
+    resource_class.find(:params[:id])
 
 While SuperResource uses the `find` method as the default, you can choose another finder method by redefining `finder_method`. For example:
 
@@ -169,13 +169,13 @@ SuperResources extracts the construction of a new resource into the `build_resou
 
 Yes, you can. All actions defined by SuperResources use responders and accept parameters to pass to `respond_with`, so customizing these parameters is a common adaptation.
 
-For example, suppose that after creating a comment, you want to redirect to an index of comments that apply to the same parent. Adapt teh action like this:
+For example, suppose that after creating a comment, you want to redirect to an index of comments that apply to the same parent. Adapt the action like this:
 
     def create
       super :location => polymorphic_url([ parent, :comments ])
     end
 
-Anything you can pass to `respond_with`, you can pass to he super call, including a block.
+Anything you can pass to `respond_with`, you can pass to the super call, including a block.
 
 You could, of course, completely redefine an action:
 

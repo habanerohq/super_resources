@@ -30,7 +30,7 @@ module SuperResources
     end
 
     def memoize_collection(&block)
-      @collection ||= block.call
+      @_collection ||= block.call
     end
 
     def collection?
@@ -42,7 +42,7 @@ module SuperResources
     end
 
     def memoize_resource(&block)
-      @resource ||= block.call
+      @_resource ||= block.call
     end
 
     def resource?

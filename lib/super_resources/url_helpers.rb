@@ -10,6 +10,8 @@ module SuperResources
       end
 
       helper_method(*(helper_methods.flatten))
+
+      helper_method :polymorphic_url, :module_name_hierarchy
     end
 
     protected
@@ -29,18 +31,21 @@ module SuperResources
     rescue NoMethodError => e
       object = chain.pop
 
-      chain.empty? ?
-        raise(e) : super_path(chain.slice(0...-1) << object, options)
+      chain.empty? ? raise(e) : super_path(chain.slice(0...-1) << object, options)
+    end
+
+    def polymorphic_url(chain, options)
+      super(qualified_chain(chain), options)
     end
 
     # collection route helpers .................................................
 
     def collection_url
-      super_url(with_chain(qualified_resource_class))
+      super_url(with_chain(resource_class))
     end
 
     def collection_path
-      super_path(with_chain(qualified_resource_class))
+      super_path(with_chain(resource_class))
     end
 
     def hash_for_collection_url(options={})
@@ -51,30 +56,30 @@ module SuperResources
 
     def resource_path(*args)
       options = args.extract_options!
-      super_path(with_chain(args.first || qualified_resource), options)
+      super_path(with_chain(args.first || resource), options)
     end
 
     def resource_url(*args)
       options = args.extract_options!
-      super_url(with_chain(args.first || qualified_resource), options)
+      super_url(with_chain(args.first || resource), options)
     end
 
     def hash_for_resource_url(*args)
       options = args.extract_options!
       route_hash.merge(options)
-                .merge(:action => 'show', :id => args.first || qualified_resource)
+                .merge(:action => 'show', :id => args.first || resource)
     end
 
     # new resource route helpers ...............................................
 
     def new_resource_path(options={})
       options.merge! :action => :new
-      super_path(with_chain(qualified_resource_class), options)
+      super_path(with_chain(resource_class), options)
     end
 
     def new_resource_url(options={})
       options.merge! :action => :new
-      super_url(with_chain(qualified_resource_class), options)
+      super_url(with_chain(resource_class), options)
     end
 
     def hash_for_new_resource_url(options={})
@@ -87,30 +92,30 @@ module SuperResources
       options = args.extract_options!
       options.merge! :action => :edit
 
-      super_path(with_chain(args.first || qualified_resource), options)
+      super_path(with_chain(args.first || resource), options)
     end
 
     def edit_resource_url(*args)
       options = args.extract_options!
       options.merge! :action => :edit
 
-      super_url(with_chain(args.first || qualified_resource), options)
+      super_url(with_chain(args.first || resource), options)
     end
 
     def hash_for_edit_resource_url(*args)
       options = args.extract_options!
       route_hash.merge(options)
-                .merge(:action => 'edit', :id => args.first || qualified_resource)
+                .merge(:action => 'edit', :id => args.first || resource)
     end
 
     # parent path helpers ......................................................
 
     def parent_path(options={})
-      super_path(qualified_association_chain, options)
+      super_path(association_chain, options)
     end
 
     def parent_url(options={})
-      super_path(qualified_association_chain, options)
+      super_path(association_chain, options)
     end
 
     def hash_for_parent_path(options={})
@@ -120,16 +125,8 @@ module SuperResources
 
     # module qualification helpers .............................................
 
-    def qualified_resource
-      (module_name_hierarchy << resource).compact
-    end
-
-    def qualified_resource_class
-      (module_name_hierarchy << resource_class).compact
-    end
-
-    def qualified_association_chain
-      (module_name_hierarchy + association_chain).compact
+    def qualified_chain(chain)
+      (module_name_hierarchy + chain).compact
     end
 
     def module_name_hierarchy

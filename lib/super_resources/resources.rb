@@ -10,11 +10,11 @@ module SuperResources
     protected
 
     def resource_class
-      controller_name.classify.singularize.safe_constantize
+      "#{resource_instance_name}".safe_constantize
     end
 
     def resource_instance_name
-      controller_name.singularize.to_sym
+      :"#{"#{resource_collection_name}".singularize}"
     end
 
     def resource_params_name
@@ -22,7 +22,7 @@ module SuperResources
     end
 
     def resource_collection_name
-      controller_name.to_sym
+      :"#{self.class.name.gsub('Controller', '')}"
     end
 
     def collection

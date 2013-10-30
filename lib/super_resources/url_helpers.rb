@@ -11,7 +11,7 @@ module SuperResources
 
       helper_method(*(helper_methods.flatten))
 
-      helper_method :polymorphic_url, :module_name_hierarchy
+      helper_method :module_name_hierarchy
     end
 
     protected
@@ -27,15 +27,11 @@ module SuperResources
     end
 
     def super_url(chain, options={})
-      polymorphic_url(chain, options)
+      polymorphic_url(qualified_chain(chain), options)
     rescue NoMethodError => e
       object = chain.pop
 
       chain.empty? ? raise(e) : super_path(chain.slice(0...-1) << object, options)
-    end
-
-    def polymorphic_url(chain, options)
-      super(qualified_chain(chain), options)
     end
 
     # collection route helpers .................................................

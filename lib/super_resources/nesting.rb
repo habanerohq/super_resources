@@ -36,7 +36,7 @@ module SuperResources
     end
 
     def end_of_association_chain
-      nested? ? parent.send(resource_collection_name) : resource_class.scoped
+      nested? ? parent.send(resource_collection_name.downcase) : resource_class.all
     end
 
     def association_chain

@@ -4,7 +4,9 @@ module SuperResources
 
     included do
       helper_method :collection, :collection?, :resource, :resource?,
-                    :resource_class, :parent, :nested?
+                    :resource_instance_name, :resource_collection_name,
+                    :resource_class, 
+                    :parent, :nested?
     end
 
     protected

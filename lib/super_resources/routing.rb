@@ -16,9 +16,9 @@ module SuperResources
       routes.router
     end
 
-    def route
+    def route      
       @route ||= recognize_route(request.path.present? ? request : mock_request)
-      @route.present? ? @route : raise(ActionController::RoutingError, "No route matches #{request.path.inspect}")
+      @route.present? ? @route : raise(ActionController::RoutingError, "No route matches [#{request.method}] #{request.path.inspect}")
     end
 
     def path_parameters

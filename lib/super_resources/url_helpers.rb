@@ -27,7 +27,8 @@ module SuperResources
     end
 
     def super_url(chain, options={})
-      polymorphic_url(qualified_chain(chain), options)
+      #polymorphic_url(qualified_chain(chain), options)
+      polymorphic_url(chain, options)
     rescue NoMethodError => e
       object = chain.pop
 

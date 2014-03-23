@@ -6,11 +6,7 @@ module SuperResources
     include Routing
 
     included do
-      helper_method :association_chain, :with_chain, :method_missing, :respond_to?
-    end
-
-    def respond_to?(m, *args)
-      m.in?(symbols_for_association_chain) ? true : super
+      helper_method :association_chain, :with_chain, :method_missing
     end
 
     protected

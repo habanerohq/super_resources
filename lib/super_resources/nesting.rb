@@ -6,69 +6,86 @@ module SuperResources
     include Routing
 
     included do
-      helper_method :association_chain, :with_chain, :method_missing
+      alias_method :parent, :outer
+
+      helper_method :nesting, :with_nesting, :nesting_hash, :nests, :outer, :parent
     end
 
     protected
 
     def collection
-      memoize_collection { end_of_association_chain }
+      memoize_collection { nest_content }
     end
 
     def resource
-      memoize_resource { end_of_association_chain.send(finder_method, params[:id]) }
+      memoize_resource { nest_content.send(finder_method, params[:id]) }
     end
 
     def build_resource(params={})
-      memoize_resource { end_of_association_chain.build(params) }
+      memoize_resource { nest_content.build(params) }
     end
 
     def nested?
-      association_chain.any?
+      nests.any?
     end
 
-    def parent
-      association_chain.last
+    def outer
+      nests.last
     end
 
-    def end_of_association_chain
-      nested? ? parent.send(resource_collection_name.downcase) : resource_class.all
+    def with_nesting(r)
+      nests + [ r ]
     end
 
-    def association_chain
-      @association_chain ||=
-        symbols_for_association_chain.inject([]) do |chain, symbol|
-          chain << chain_link(symbol, chain.last)
+    def nest_content
+      nested? ? outer.send(resource_collection_name.downcase) : resource_class.all
+    end
+
+    def nesting_hash
+      path_parameters.except(:id, :action, :controller)
+    end
+
+    def nests
+      @nests ||= nesting.values.reverse
+    end
+
+    def nesting
+      @nesting ||=
+        nesting_hash.inject({}) do |n, (k, v)|
+          n[nest_name(k)] = nest_for(nest_name(k), n.values.last)
+          n
         end
     end
 
-    def chain_link(symbol, previous_link)
-      link = if previous_link
-        previous_link.send(symbol.to_s.pluralize.to_sym)
+    def nest_name(id_symbol)
+      id_symbol.to_s.gsub(/_id$/, '').to_sym
+    end
+
+    def nest_for(nest_name, inner=resource)
+      klass = inner.try(:class) || resource_class
+
+      case
+
+      when (r = klass.reflections[nest_name].present?)
+        resource_for_reflection(nest_name, r)
+
+      when (r = klass.reflections.values.detect { |r| nest_name.to_s.in?(r.class_name.underscore) })
+        resource_for_reflection(nest_name, r)
+
+      when (r = klass.reflections.values.detect { |r| nest_name.to_s.include?(r.class_name.underscore.split('/').last) })
+        resource_for_reflection(nest_name, r)
+
       else
-        symbol.to_s.classify.safe_constantize
+        r = klass.reflections.values.select { |r| r.macro == :belongs_to }.detect do |r|
+          n = inner.send(r.name)
+          nest_name.to_s.in?(n.class.name.underscore)
+        end
       end
-
-      link.find(params[:"#{symbol}_id"])
+      resource_for_reflection(nest_name, r)
     end
 
-    def symbols_for_association_chain
-      @symbols_for_association_chain ||=
-        route.parts \
-             .select { |p| p.to_s =~ %r(_id$) } \
-             .map    { |p| p.to_s.gsub(/_id$/, '').to_sym }
-    end
-
-    def with_chain(object)
-      association_chain + [ object ]
-    end
-
-    def method_missing(method, *args, &block)
-      if index = symbols_for_association_chain.index(method)
-        association_chain[index]
-      else
-        super
-      end
+    def resource_for_reflection(nest_name, reflection)
+      reflection.class_name.safe_constantize.find(params["#{nest_name}_id"])
     end
   end
 end

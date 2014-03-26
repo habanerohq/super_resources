@@ -7,19 +7,19 @@ module SuperResources
     end
 
     def index(options = {}, &block)
-      respond_with(*(with_chain(collection) << options), &block)
+      respond_with(*(with_nesting(collection) << options), &block)
     end
 
     def show(options = {}, &block)
-      respond_with(*(with_chain(resource) << options), &block)
+      respond_with(*(with_nesting(resource) << options), &block)
     end
 
     def new(options = {}, &block)
-      respond_with(*(with_chain(build_resource) << options), &block)
+      respond_with(*(with_nesting(build_resource) << options), &block)
     end
 
     def edit(options = {}, &block)
-      respond_with(*(with_chain(resource) << options), &block)
+      respond_with(*(with_nesting(resource) << options), &block)
     end
 
     def create(options = {}, &block)
@@ -27,7 +27,7 @@ module SuperResources
         options[:location] ||= resource_url
       end
 
-      respond_with(*(with_chain(resource) << options), &block)
+      respond_with(*(with_nesting(resource) << options), &block)
     end
 
     def update(options = {}, &block)
@@ -35,7 +35,7 @@ module SuperResources
         options[:location] ||= resource_url
       end
 
-      respond_with(*(with_chain(resource) << options), &block)
+      respond_with(*(with_nesting(resource) << options), &block)
     end
 
     def destroy(options = {}, &block)
@@ -43,7 +43,7 @@ module SuperResources
         options[:location] ||= collection_url
       end
 
-      respond_with(*(with_chain(resource) << options), &block)
+      respond_with(*(with_nesting(resource) << options), &block)
     end
   end
 end

@@ -1,3 +1,5 @@
+require 'super_resources/nest_resource'
+
 module SuperResources
   module Nesting
     extend ActiveSupport::Concern
@@ -46,7 +48,7 @@ module SuperResources
     end
 
     def nests
-      @nests ||= nesting.values.reverse
+      @nests ||= nesting.values
     end
 
     def nesting
@@ -64,28 +66,7 @@ module SuperResources
     def nest_for(nest_name, inner=resource)
       klass = inner.try(:class) || resource_class
 
-      case
-
-      when (r = klass.reflections[nest_name].present?)
-        resource_for_reflection(nest_name, r)
-
-      when (r = klass.reflections.values.detect { |r| nest_name.to_s.in?(r.class_name.underscore) })
-        resource_for_reflection(nest_name, r)
-
-      when (r = klass.reflections.values.detect { |r| nest_name.to_s.include?(r.class_name.underscore.split('/').last) })
-        resource_for_reflection(nest_name, r)
-
-      else
-        r = klass.reflections.values.select { |r| r.macro == :belongs_to }.detect do |r|
-          n = inner.send(r.name)
-          nest_name.to_s.in?(n.class.name.underscore)
-        end
-      end
-      resource_for_reflection(nest_name, r)
-    end
-
-    def resource_for_reflection(nest_name, reflection)
-      reflection.class_name.safe_constantize.find(params["#{nest_name}_id"])
+      SuperResources::NestResource.new(nest_name, params["#{nest_name}_id"], klass, inner).resource
     end
   end
 end

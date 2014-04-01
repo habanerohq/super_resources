@@ -43,10 +43,6 @@ module SuperResources
       nested? ? outer.send(resource_collection_name.downcase) : resource_class.all
     end
 
-    def nesting_hash
-      path_parameters.except(:id, :action, :controller)
-    end
-
     def nests
       @nests ||= nesting.values
     end
@@ -67,6 +63,14 @@ module SuperResources
       klass = inner.try(:class) || resource_class
 
       SuperResources::NestResource.new(nest_name, params["#{nest_name}_id"], klass, inner).resource
+    end
+
+    def nesting_hash
+      path_parameters.except(*excluded_params)
+    end
+
+    def excluded_params
+      [:id, :action, :controller, :format, :locale, :version]
     end
   end
 end

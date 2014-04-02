@@ -70,7 +70,7 @@ module SuperResources
     end
 
     def excluded_params
-      [:id, :action, :controller, :format, :locale, :version]
+      path_parameters.keys.reject { |k| k =~ /_id$/ }
     end
   end
 end

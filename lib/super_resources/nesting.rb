@@ -49,10 +49,12 @@ module SuperResources
 
     def nesting
       @nesting ||=
-        nesting_hash.inject({}) do |n, (k, v)|
-          n[nest_name(k)] = nest_for(nest_name(k), n.values.last)
-          n
-        end
+        Hash[
+          nesting_hash.inject({}) do |n, (k, v)|
+            n[nest_name(k)] = nest_for(nest_name(k), n.values.last)
+            n
+          end.to_a.reverse
+        ]
     end
 
     def nest_name(id_symbol)
@@ -66,7 +68,7 @@ module SuperResources
     end
 
     def nesting_hash
-      path_parameters.except(*excluded_params)
+      Hash[path_parameters.except(*excluded_params).to_a.reverse]
     end
 
     def excluded_params

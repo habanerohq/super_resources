@@ -81,11 +81,6 @@ module SuperResources
 
     def super_url(chain, options={})
       polymorphic_url(chain, options)
-    rescue NoMethodError => e
-      object = chain.pop
-
-      chain.empty? ?
-        raise(e) : super_path(chain.slice(0...-1) << object, options)
     end
   end
 end

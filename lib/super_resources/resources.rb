@@ -4,8 +4,8 @@ module SuperResources
 
     included do
       helper_method :collection, :collection?, :resource, :resource?,
-                    :resource_instance_name, :resource_collection_name,
-                    :resource_class, 
+                    :resource_instance_name, :resource_params_name, :resource_collection_name,
+                    :resource_class,
                     :parent, :nested?
     end
 
@@ -23,8 +23,12 @@ module SuperResources
       resource_instance_name
     end
 
+    def resource_params_name_in_isolated_engine
+      resource_class_name.underscore.split('/')[1 .. -1].join('_')
+    end
+
     def resource_instance_name
-      resource_class_name.underscore.split('/').last
+      resource_class_name.demodulize.underscore
     end
 
     def resource_collection_name

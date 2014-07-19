@@ -51,7 +51,7 @@ module SuperResources
     end
 
     def resource
-      memoize_resource { resource_class.send(finder_method, params[:id]) }
+      memoize_resource { resource_class.send(finder_method, params[:id]) } if params[:id]
     end
 
     def memoize_resource(&block)

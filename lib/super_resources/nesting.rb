@@ -20,7 +20,7 @@ module SuperResources
     end
 
     def resource
-      memoize_resource { nest_content.send(finder_method, params[:id]) } if resource?
+      memoize_resource { nest_content.send(finder_method, params[:id]) if resource? }
     end
 
     def build_resource(params={})

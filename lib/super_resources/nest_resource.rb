@@ -19,8 +19,8 @@ class SuperResources::NestResource
     name_match ||
     class_name_guess ||
     namespace_guess ||
-    engine_guess ||
     superclass_name_guess ||
+    engine_guess ||
     polymorphic_guess
   end
 

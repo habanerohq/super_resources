@@ -19,6 +19,7 @@ class SuperResources::NestResource
     name_match ||
     class_name_guess ||
     namespace_guess ||
+    engine_guess ||
     superclass_name_guess ||
     polymorphic_guess
   end
@@ -37,6 +38,14 @@ class SuperResources::NestResource
     (klass.name.underscore.split('/')[0 .. -2] << name).join('/').classify.safe_constantize
   end
 
+  def engine_guess
+    classes_in_engines.select do |cie|
+      cie.reflections.values.detect do |r|
+        r.macro == :has_many and r.name == klass.name.demodulize.underscore.pluralize.to_sym
+      end
+    end.compact.first
+  end
+
   def superclass_name_guess
     reflection_class(
       reflections.detect { |r| name.to_s.include?(r.class_name.underscore.split('/').last) }
@@ -52,6 +61,14 @@ class SuperResources::NestResource
         end
       end
     )
+  end
+
+  def classes_in_engines
+    engine_names.map { |e| "#{e}::#{name.to_s.camelize}".safe_constantize }.compact
+  end
+
+  def engine_names
+    Rails::Engine.subclasses.map(&:name).select { |s| s =~ /Engine/ }
   end
 
   def reflection_class(reflection)

@@ -64,7 +64,7 @@ class SuperResources::NestResource
   end
 
   def classes_in_engines
-    engine_names.map { |e| "#{e}::#{name.to_s.camelize}".safe_constantize }.compact
+    engine_names.map { |e| "#{e.deconstantize}::#{name.to_s.camelize}".safe_constantize }.compact
   end
 
   def engine_names

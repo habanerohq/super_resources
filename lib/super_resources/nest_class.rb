@@ -1,28 +1,25 @@
-class SuperResources::NestResource
+class SuperResources::NestClass
 
-  attr_reader :name, :id, :klass, :model
+  attr_reader :name, :klass, :model
 
-  def initialize(name, id, klass, model)
+  def initialize(name, klass, model)
     @name = name
-    @id = id
     @klass = klass
     @model = model
   end
 
-  def resource
-    target_class.find(id)
+  def guesses
+    [
+      name_match ||
+      class_name_guess ||
+      namespace_guess ||
+      superclass_name_guess ||
+      engine_guess ||
+      polymorphic_guess
+    ].flatten
   end
 
   protected
-
-  def target_class
-    name_match ||
-    class_name_guess ||
-    namespace_guess ||
-    superclass_name_guess ||
-    engine_guess ||
-    polymorphic_guess
-  end
 
   def name_match
     reflection_class(klass.reflections[name])
@@ -43,7 +40,7 @@ class SuperResources::NestResource
       cie.reflections.values.detect do |r|
         r.macro == :has_many and r.name == klass.name.demodulize.underscore.pluralize.to_sym
       end
-    end.compact.first
+    end.compact
   end
 
   def superclass_name_guess

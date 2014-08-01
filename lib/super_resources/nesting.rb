@@ -1,4 +1,4 @@
-require 'super_resources/nest_resource'
+require 'super_resources/nest_class'
 
 module SuperResources
   module Nesting
@@ -62,9 +62,27 @@ module SuperResources
     end
 
     def nest_for(nest_name, inner=resource)
+      best_class(guesses(nest_name, inner), inner).try(:find, params["#{nest_name}_id"])
+    end
+
+    def guesses(nest_name, inner)
       klass = inner.try(:class) || resource_class
 
-      SuperResources::NestResource.new(nest_name, params["#{nest_name}_id"], klass, inner).resource
+      nest_class.new(nest_name, klass, inner).guesses
+    end
+
+    def best_class(class_array, inner)
+      r = (inner.present? ? inner.class.demodulize.underscore.pluralize : resource_collection_name).to_sym
+
+      descendant_class(class_array.select { |c| c.reflections[r] })
+    end
+
+    def descendant_class(class_array)
+      class_array.reduce { |m, i| m < i ? m : i }
+    end
+
+    def nest_class
+      SuperResources::NestClass
     end
 
     def nesting_hash

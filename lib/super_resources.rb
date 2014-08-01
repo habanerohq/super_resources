@@ -4,7 +4,7 @@ module SuperResources
   autoload :Actions
   autoload :Controller
   autoload :Nesting
-  autoload :NestResource
+  autoload :NestClass
   autoload :Resources
   autoload :Routing
   autoload :URLHelpers

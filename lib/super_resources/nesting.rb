@@ -62,7 +62,9 @@ module SuperResources
     end
 
     def nest_for(nest_name, inner=resource)
-      best_class(guesses(nest_name, inner), inner).try(:find, params["#{nest_name}_id"])
+      g = guesses(nest_name, inner)
+
+      (g.length == 1 ? g.first : best_class(g, inner)).try(:find, params["#{nest_name}_id"])
     end
 
     def guesses(nest_name, inner)

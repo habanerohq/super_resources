@@ -10,7 +10,7 @@ module SuperResources
     included do
       alias_method :parent, :outer
 
-      helper_method :nesting, :with_nesting, :nesting_hash, :nests, :outer, :parent
+      helper_method :nesting, :with_nesting, :nesting_hash, :nests, :nest_to, :nest_or_resource, :outer, :parent
     end
 
     protected
@@ -29,6 +29,14 @@ module SuperResources
 
     def nested?
       nests.any?
+    end
+
+    def nest_to(s)
+      with_nesting(nest_or_resource(s)).uniq
+    end
+
+    def nest_or_resource(s)
+      nesting[s.to_sym] || (resource if resource_instance_name == s.to_s)
     end
 
     def outer
@@ -74,7 +82,7 @@ module SuperResources
     end
 
     def best_class(class_array, inner)
-      r = (inner.present? ? inner.class.demodulize.underscore.pluralize : resource_collection_name).to_sym
+      r = (inner.present? ? inner.class.name.demodulize.underscore.pluralize : resource_collection_name).to_sym
 
       descendant_class(class_array.select { |c| c.reflections[r] })
     end

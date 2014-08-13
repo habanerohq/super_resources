@@ -88,7 +88,11 @@ module SuperResources
     end
 
     def descendant_class(class_array)
-      class_array.reduce { |m, i| m < i ? m : i }
+      class_array.reduce { |m, i| m.send(class_tie_breaker(class_array), i) ? m : i }
+    end
+
+    def class_tie_breaker(*args)
+      '<'
     end
 
     def nest_class

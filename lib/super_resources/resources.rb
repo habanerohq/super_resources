@@ -44,7 +44,9 @@ module SuperResources
     end
 
     def resource
-      memoize_resource { resource_class.send(finder_method, params[:id]) }
+      memoize_resource do
+        resource_class.respond_to?(:friendly_id) ? resource_class.friendly.find(params[:id]) : resource_class.send(finder_method, params[:id])
+      end
     end
 
     def memoize_resource(&block)

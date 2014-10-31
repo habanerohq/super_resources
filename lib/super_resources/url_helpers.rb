@@ -5,8 +5,7 @@ module SuperResources
     included do
       helpers = %w(collection resource new_resource edit_resource parent)
       helper_methods = helpers.map do |helper|
-        [ :"#{helper}_path", :"hash_for_#{helper}_path",
-          :"#{helper}_url", :"hash_for_#{helper}_url" ]
+        [ :"#{helper}_path", :"#{helper}_url" ]
       end
 
       helper_method(*(helper_methods.flatten))
@@ -14,79 +13,38 @@ module SuperResources
 
     protected
 
-    # core stuff ..............................................................
-
-    def route_hash
-      path_parameters.except(:id, :action)
-    end
-
-    def super_path(chain, options={})
-      super_url(chain, options.merge(:routing_type => :path))
-=begin
-      polymorphic_url(chain, options.merge(:routing_type => :path))
-    rescue NoMethodError => e
-      object = chain.pop
-
-      chain.empty? ?
-        raise(e) : super_path(chain.slice(0...-1) << object, options)
-=end
-    end
-
-    def super_url(chain, options={})
-      polymorphic_url(chain, options)
-    rescue NoMethodError => e
-      object = chain.pop
-
-      chain.empty? ?
-        raise(e) : super_path(chain.slice(0...-1) << object, options)
-    end
-
     # collection route helpers .................................................
 
     def collection_url
-      super_url(with_chain(resource_class))
+      super_url(with_nesting(resource_class))
     end
 
     def collection_path
-      super_path(with_chain(resource_class))
-    end
-
-    def hash_for_collection_url(options={})
-      route_hash.merge(options).merge(:action => 'index')
+      super_path(with_nesting(resource_class))
     end
 
     # resource route helpers ...................................................
 
     def resource_path(*args)
       options = args.extract_options!
-      super_path(with_chain(args.first || resource), options)
+      super_path(with_nesting(args.first || resource), options)
     end
 
     def resource_url(*args)
       options = args.extract_options!
-      super_url(with_chain(args.first || resource), options)
-    end
-
-    def hash_for_resource_url(*args)
-      options = args.extract_options!
-      route_hash.merge(options)
-                .merge(:action => 'show', :id => args.first || resource)
+      super_url(with_nesting(args.first || resource), options)
     end
 
     # new resource route helpers ...............................................
 
     def new_resource_path(options={})
       options.merge! :action => :new
-      super_path(with_chain(resource_class), options)
+      super_path(with_nesting(resource_class), options)
     end
 
     def new_resource_url(options={})
       options.merge! :action => :new
-      super_url(with_chain(resource_class), options)
-    end
-
-    def hash_for_new_resource_url(options={})
-      route_hash.merge(options).merge(:action => 'new')
+      super_url(with_nesting(resource_class), options)
     end
 
     # edit resource route helpers ..............................................
@@ -95,35 +53,34 @@ module SuperResources
       options = args.extract_options!
       options.merge! :action => :edit
 
-      super_path(with_chain(args.first || resource), options)
+      super_path(with_nesting(args.first || resource), options)
     end
 
     def edit_resource_url(*args)
       options = args.extract_options!
       options.merge! :action => :edit
 
-      super_url(with_chain(args.first || resource), options)
-    end
-
-    def hash_for_edit_resource_url(*args)
-      options = args.extract_options!
-      route_hash.merge(options)
-                .merge(:action => 'edit', :id => args.first || resource)
+      super_url(with_nesting(args.first || resource), options)
     end
 
     # parent path helpers ......................................................
 
     def parent_path(options={})
-      super_path(association_chain, options)
+      super_path(nests, options)
     end
 
     def parent_url(options={})
-      super_path(association_chain, options)
+      super_path(nests, options)
     end
 
-    def hash_for_parent_path(options={})
-      # TODO: mess around with this sucker
-      raise NotImplementedException
+    # core stuff ..............................................................
+
+    def super_path(chain, options={})
+      super_url(chain, options.merge(:routing_type => :path))
+    end
+
+    def super_url(chain, options={})
+      polymorphic_url(chain, options)
     end
   end
 end

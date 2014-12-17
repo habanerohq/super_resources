@@ -21,7 +21,7 @@ module SuperResources
 
     def resource
       memoize_resource do
-        nest_content.respond_to?(:friendly_id) ? nest_content.friendly.find(params[:id]) : nest_content.send(finder_method, params[:id])
+        requires_friendly_find?(nest_content) ? nest_content.friendly.find(params[:id]) : nest_content.send(finder_method, params[:id])
       end
     end
 

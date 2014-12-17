@@ -4,11 +4,8 @@ module SuperResources
 
     included do
       helper_method :collection, :collection?, :resource, :resource?,
-                    :resource_instance_name,
-                    :resource_params_name,
-                    :resource_params_name_in_isolated_engine,
-                    :resource_collection_name,
-                    :resource_class,
+                    :resource_instance_name, :resource_collection_name,
+                    :resource_class, 
                     :parent, :nested?
     end
 
@@ -26,12 +23,8 @@ module SuperResources
       resource_instance_name
     end
 
-    def resource_params_name_in_isolated_engine
-      resource_class_name.underscore.split('/')[1 .. -1].join('_')
-    end
-
     def resource_instance_name
-      resource_class_name.demodulize.underscore
+      resource_class_name.underscore.split('/').last
     end
 
     def resource_collection_name
@@ -51,11 +44,17 @@ module SuperResources
     end
 
     def resource
-      memoize_resource { resource_class.send(finder_method, params[:id]) if resource? }
+      memoize_resource do
+        requires_friendly_find?(resource_class) ? resource_class.friendly.find(params[:id]) : resource_class.send(finder_method, params[:id])
+      end
     end
 
     def memoize_resource(&block)
       @_resource ||= block.call
+    end
+
+    def requires_friendly_find?(klass)
+      klass.respond_to?(:friendly_id_config) && !klass.friendly_id_config.uses?(:finders)
     end
 
     def resource?

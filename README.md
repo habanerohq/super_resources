@@ -1,6 +1,6 @@
 # SuperResources
 
-SuperResources DRYs up your controller code by abstracting your controller's strandard RESTful actions and by providing 
+SuperResources DRYs up your controller code by abstracting your controller's standard RESTful actions and by providing 
 standard helpers to access the controller's target resource(s) in a consistent way across all controllers. More than that,
 SuperResources exploits the application's routes to provide simplified path helpers for nested resources.
 

@@ -54,7 +54,7 @@ module SuperResources
     end
 
     def requires_friendly_find?(klass)
-      klass.respond_to?(:friendly_id_config)  && !klass.friendly_id_config.uses?(:finders)
+      klass.respond_to?(:friendly_id_config) && !klass.friendly_id_config.uses?(:finders)
     end
 
     def resource?

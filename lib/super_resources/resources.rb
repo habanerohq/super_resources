@@ -5,18 +5,28 @@ module SuperResources
     included do
       helper_method :collection, :collection?, :resource, :resource?,
                     :resource_instance_name, :resource_collection_name,
-                    :resource_class, 
+                    :resource_class,
                     :parent, :nested?
+    end
+
+    module ClassMethods
+      def resource_class
+        resource_class_name.safe_constantize
+      end
+
+      def resource_class_name
+        name.gsub('Controller', '').singularize
+      end
     end
 
     protected
 
     def resource_class
-      resource_class_name.safe_constantize
+      self.class.resource_class
     end
 
     def resource_class_name
-      self.class.name.gsub('Controller', '').singularize
+      self.class.resource_class_name
     end
 
     def resource_params_name

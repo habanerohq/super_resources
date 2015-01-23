@@ -1,4 +1,4 @@
-require 'super_resources/nest_resource'
+require 'super_resources/nest_class'
 
 module SuperResources
   module Nesting
@@ -10,7 +10,7 @@ module SuperResources
     included do
       alias_method :parent, :outer
 
-      helper_method :nesting, :with_nesting, :nesting_hash, :nests, :outer, :parent
+      helper_method :nesting, :with_nesting, :nesting_hash, :nests, :nest_to, :nest_or_resource, :outer, :parent
     end
 
     protected
@@ -31,6 +31,14 @@ module SuperResources
 
     def nested?
       nests.any?
+    end
+
+    def nest_to(s)
+      with_nesting(nest_or_resource(s)).uniq
+    end
+
+    def nest_or_resource(s)
+      nesting[s.to_sym] || (resource if resource_instance_name == s.to_s)
     end
 
     def outer
@@ -64,9 +72,33 @@ module SuperResources
     end
 
     def nest_for(nest_name, inner=resource)
+      g = guesses(nest_name, inner)
+
+      (g.length == 1 ? g.first : best_class(g, inner)).try(:find, params["#{nest_name}_id"])
+    end
+
+    def guesses(nest_name, inner)
       klass = inner.try(:class) || resource_class
 
-      SuperResources::NestResource.new(nest_name, params["#{nest_name}_id"], klass, inner).resource
+      nest_class.new(nest_name, klass, inner).guesses
+    end
+
+    def best_class(class_array, inner)
+      r = (inner.present? ? inner.class.name.demodulize.underscore.pluralize : resource_collection_name).to_sym
+
+      descendant_class(class_array.select { |c| c.reflections[r] })
+    end
+
+    def descendant_class(class_array)
+      class_array.reduce { |m, i| m.send(class_tie_breaker(class_array), i) ? m : i }
+    end
+
+    def class_tie_breaker(*args)
+      '<'
+    end
+
+    def nest_class
+      SuperResources::NestClass
     end
 
     def nesting_hash

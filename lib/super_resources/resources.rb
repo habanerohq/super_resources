@@ -62,8 +62,16 @@ module SuperResources
 
     def resource
       memoize_resource do
-        requires_friendly_find?(resource_class) ? resource_class.friendly.find(params[:id]) : resource_class.send(finder_method, params[:id])
+        resource_finding(finding_scope) if resource?
       end
+    end
+
+    def resource_finding(scope)
+      requires_friendly_find?(scope) ? scope.friendly.find(params[:id]) : scope.send(finder_method, params[:id])
+    end
+
+    def finding_scope
+      resource_class
     end
 
     def memoize_resource(&block)

@@ -19,10 +19,8 @@ module SuperResources
       memoize_collection { nest_content }
     end
 
-    def resource
-      memoize_resource do
-        requires_friendly_find?(nest_content) ? nest_content.friendly.find(params[:id]) : nest_content.send(finder_method, params[:id])
-      end
+    def finding_scope
+      nest_content
     end
 
     def build_resource(params={})

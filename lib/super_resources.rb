@@ -13,6 +13,7 @@ module SuperResources
   autoload_under 'support' do
     autoload :Cancan
     autoload :Draper
+    autoload :FriendlyId
     autoload :HasScope
   end
 end

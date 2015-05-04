@@ -67,7 +67,7 @@ module SuperResources
     end
 
     def resource_finding(scope)
-      requires_friendly_find?(scope) ? scope.friendly.find(params[:id]) : scope.send(finder_method, params[:id])
+      scope.send(finder_method, params[:id])
     end
 
     def finding_scope
@@ -76,10 +76,6 @@ module SuperResources
 
     def memoize_resource(&block)
       @_resource ||= block.call
-    end
-
-    def requires_friendly_find?(klass)
-      klass.respond_to?(:friendly_id_config) && !klass.friendly_id_config.uses?(:finders)
     end
 
     def resource?

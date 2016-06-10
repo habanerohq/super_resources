@@ -22,7 +22,7 @@ class SuperResources::NestClass
   protected
 
   def name_match
-    reflection_class(klass.reflections[name])
+    reflection_class(klass.reflect_on_association(name)])
   end
 
   def class_name_guess

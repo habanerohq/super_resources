@@ -84,7 +84,7 @@ module SuperResources
     def best_class(class_array, inner)
       r = (inner.present? ? inner.class.name.demodulize.underscore.pluralize : resource_collection_name).to_sym
 
-      descendant_class(class_array.select { |c| c.reflections[r] })
+      descendant_class(class_array.select { |c| c.reflect_on_association(r) })
     end
 
     def descendant_class(class_array)
